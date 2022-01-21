@@ -1,6 +1,7 @@
 # GeekTrust FrontEnd - Admin UI
 
 [Problem Link](https://www.geektrust.in/coding-problem/frontend/adminui)
+[Solution Live](https://user-manager-mp5.web.app/)
 
 ### Requirements 
 
