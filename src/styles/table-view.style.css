@@ -1,0 +1,13 @@
+
+
+.icon-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon-button > img {
+  width: 25px;
+  height: 25px;
+  margin: 0px 10px 0 0;
+}

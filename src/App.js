@@ -1,10 +1,13 @@
 import Navbar from './components/navbar';
+import TableView from './components/table-view';
 
 function App() {
   return (
     <>
       <Navbar />
-      GeekTrust Admin UI Project👋👋👋
+      <div className="container mt-3">
+        <TableView />
+      </div>
     </>
   );
 }
