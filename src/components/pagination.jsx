@@ -18,15 +18,21 @@ function Pagination({ activeRowController, maxRows = 5 }) {
         <ul className="pagination">
           <li className="page-item">
             <button
-              className="page-link"
+              className={`page-link ${activeRow === 0 ? 'disabled-page' : ''}`}
               aria-label="First Page"
               onClick={() => setactiveRow(0)}
+              disabled={activeRow === 0}
             >
               <span aria-hidden="true">&lt;&lt;</span>
             </button>
           </li>
           <li className="page-item">
-            <button className="page-link" aria-label="Previous">
+            <button
+              className={`page-link ${activeRow === 0 ? 'disabled-page' : ''}`}
+              aria-label="Previous"
+              onClick={() => setactiveRow(activeRow > 0 ? activeRow - 1 : 0)}
+              disabled={activeRow === 0}
+            >
               <span aria-hidden="true">&lt;</span>
             </button>
           </li>
@@ -49,15 +55,29 @@ function Pagination({ activeRowController, maxRows = 5 }) {
             </>
           ))}
           <li className="page-item">
-            <button className="page-link" aria-label="Next">
+            <button
+              className={`page-link ${
+                activeRow === maxRows - 1 ? 'disabled-page' : ''
+              }`}
+              aria-label="Next"
+              onClick={() =>
+                setactiveRow(
+                  activeRow >= maxRows - 1 ? maxRows - 1 : activeRow + 1
+                )
+              }
+              disabled={activeRow === maxRows - 1}
+            >
               <span aria-hidden="true">&gt;</span>
             </button>
           </li>
           <li className="page-item">
             <button
-              className="page-link"
+              className={`page-link ${
+                activeRow === maxRows - 1 ? 'disabled-page' : ''
+              }`}
               aria-label="Last Page"
               onClick={() => setactiveRow(maxRows - 1)}
+              disabled={activeRow === maxRows - 1}
             >
               <span aria-hidden="true">&gt;&gt;</span>
             </button>
