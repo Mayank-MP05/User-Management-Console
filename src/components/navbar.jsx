@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Navbar() {
+function Navbar({ searchQueryStr, setsearchQueryStr }) {
   return (
     <nav className="navbar navbar-light bg-light">
       <div className="container-fluid">
@@ -9,12 +9,11 @@ function Navbar() {
           <input
             className="form-control me-2"
             type="search"
-            placeholder="Search"
+            value={searchQueryStr}
+            onChange={(e) => setsearchQueryStr(e.target.value)}
+            placeholder="Search user ..."
             aria-label="Search"
           />
-          <button className="btn btn-outline-success" type="submit">
-            Search
-          </button>
         </div>
       </div>
     </nav>

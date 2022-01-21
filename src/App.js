@@ -10,7 +10,12 @@ import TableView from './components/table-view';
 
 function App() {
   const [usersListRaw, setusersListRaw] = useState([]);
+  const [usersListRender, setusersListRender] = useState([]);
+  const [searchQueryStr, setsearchQueryStr] = useState(``);
 
+  /**
+   * Call this useEffect first time Page loads - Fetches Data from API
+   */
   useEffect(() => {
     axios
       .get(
@@ -18,16 +23,33 @@ function App() {
       )
       .then((res) => {
         setusersListRaw(res.data);
+        setusersListRender(res.data);
       })
       .catch((err) => console.log(err));
   }, []);
 
+  /**
+   * Filter outs the data based on the Search Query Provided
+   */
+  useEffect(() => {
+    const searchQueryTrimmed = searchQueryStr.trim();
+    const filteredData = usersListRaw.filter((record) => {
+      return `${record.id}|||${record.name}|||${record.role}|||${record.email}`.includes(
+        searchQueryTrimmed
+      );
+    });
+    setusersListRender(filteredData);
+  }, [searchQueryStr, setsearchQueryStr]);
+
   return (
     <>
-      <Navbar />
+      <Navbar
+        searchQueryStr={searchQueryStr}
+        setsearchQueryStr={setsearchQueryStr}
+      />
       <div className="container mt-3">
         <StatusBar />
-        <TableView renderData={usersListRaw}/>
+        <TableView renderData={usersListRender} />
       </div>
       <Pagination />
       <ConfirmDelete isOpen={false} />
