@@ -12,11 +12,15 @@ import TableView from './components/table-view';
 import EditIcon from './assets/user-edit-solid.svg';
 import DeleteIcon from './assets/user-delete-solid.svg';
 
+const pagesPerRow = 10;
+
 function App() {
   const [usersListRaw, setusersListRaw] = useState([]);
   const [usersListRender, setusersListRender] = useState([]);
   const [searchQueryStr, setsearchQueryStr] = useState(``);
   const [tableLoader, settableLoader] = useState(false);
+  const [maxRowsGenerated, setmaxRowsGenerated] = useState(0);
+  const [activeRow, setactiveRow] = useState(0);
 
   /**
    * Call this useEffect first time Page loads - Fetches Data from API
@@ -39,8 +43,11 @@ function App() {
 
   /**
    * Filter out the data based on the Search Query Provided
+   * @param {*} usersListRaw - raw user list array as coming from API
+   * @returns - Array filtered out based on text search of query
    */
   const getFilteredResults = (usersListRaw) => {
+    if (!usersListRaw) return usersListRaw;
     const searchQueryTrimmed = searchQueryStr.trim();
     const filteredData = usersListRaw.filter((record) => {
       return `${record.id}|||${record.name}|||${record.role}|||${record.email}`.includes(
@@ -48,6 +55,24 @@ function App() {
       );
     });
     return filteredData;
+  };
+
+  /**
+   * Return the sliced array segment of length `pagesPerRow`
+   * @param {*} userListFiltered - Input the filtered out array
+   * @param {*} activeRow - Row which to render to UI
+   * @returns - Sliced array segment of length with Proper indexing
+   */
+  const buildPagination = (userListFiltered, activeRow) => {
+    if (!userListFiltered) return userListFiltered;
+    const maxRowsGenerated = Math.floor(userListFiltered.length / pagesPerRow);
+    // setmaxRowsGenerated(maxRowsGenerated);
+    const startIdx = activeRow * pagesPerRow;
+    const endIdx = (activeRow + 1) * pagesPerRow;
+
+    // startIdx to endIdx ranges like 0-10 , 10-20 (endIdx excluded)
+    const paginated = userListFiltered.slice(startIdx, endIdx);
+    return paginated;
   };
 
   return (
@@ -74,12 +99,15 @@ function App() {
           <tbody>
             {tableLoader ? (
               <tr>
-                <th className="text-center m-4" colspan="5">
+                <th className="text-center m-4" colSpan="5">
                   <Spinner color="success" />
                 </th>
               </tr>
             ) : (
-              getFilteredResults(usersListRender).map((dataRow) => (
+              buildPagination(
+                getFilteredResults(usersListRender),
+                activeRow
+              ).map((dataRow) => (
                 <tr key={dataRow.id}>
                   <th scope="row">
                     <input
@@ -113,7 +141,7 @@ function App() {
           </tbody>
         </table>
       </div>
-      <Pagination />
+      <Pagination activeRowController={{ activeRow, setactiveRow }} />
       <ConfirmDelete isOpen={false} />
       <EditRecord isOpen={false} />
       <Spinner color="success" />

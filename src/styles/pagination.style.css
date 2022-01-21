@@ -1,0 +1,17 @@
+.page-link {
+  border: 1px solid gray;
+  border-radius: 50%;
+  margin: 0 10px;
+}
+
+.active-page {
+  box-shadow: 2px 2px 2px 1px rgba(51, 255, 0, 0.5);
+}
+
+.eligible-page {
+  box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.5);
+}
+
+.disabled-page {
+  background: gray;
+}

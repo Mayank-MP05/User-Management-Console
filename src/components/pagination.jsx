@@ -1,6 +1,14 @@
 import React from 'react';
+import '../styles/pagination.style.css';
 
-function Pagination() {
+function Pagination({ activeRowController, maxRows = 5 }) {
+  const { activeRow, setactiveRow } = activeRowController;
+  const rowExistsArr = [false, false, false, false, false].fill(
+    true,
+    0,
+    maxRows
+  );
+
   return (
     <div className="m-2">
       <nav
@@ -9,7 +17,11 @@ function Pagination() {
       >
         <ul className="pagination">
           <li className="page-item">
-            <button className="page-link" aria-label="Previous">
+            <button
+              className="page-link"
+              aria-label="First Page"
+              // onClick={() => setactiveRow(0)}
+            >
               <span aria-hidden="true">&lt;&lt;</span>
             </button>
           </li>
@@ -18,24 +30,35 @@ function Pagination() {
               <span aria-hidden="true">&lt;</span>
             </button>
           </li>
+          {rowExistsArr.map((existsFlag, currentIdx) => (
+            <>
+              <li className="page-item" key={currentIdx}>
+                {existsFlag ? (
+                  <button
+                    className={`page-link ${
+                      currentIdx === activeRow ? 'active-page' : 'eligible-page'
+                    }`}
+                    onClick={() => setactiveRow(currentIdx)}
+                  >
+                    {currentIdx + 1}
+                  </button>
+                ) : (
+                  ''
+                )}
+              </li>
+            </>
+          ))}
           <li className="page-item">
-            <button className="page-link">1</button>
-          </li>
-          <li className="page-item">
-            <button className="page-link disabled" disabled>
-              2
-            </button>
-          </li>
-          <li className="page-item">
-            <button className="page-link">3</button>
-          </li>
-          <li className="page-item">
-            <button className="page-link" aria-label="Previous">
+            <button className="page-link" aria-label="Next">
               <span aria-hidden="true">&gt;</span>
             </button>
           </li>
           <li className="page-item">
-            <button className="page-link" aria-label="Next">
+            <button
+              className="page-link"
+              aria-label="Last Page"
+              // onClick={() => setactiveRow(maxRows)}
+            >
               <span aria-hidden="true">&gt;&gt;</span>
             </button>
           </li>
