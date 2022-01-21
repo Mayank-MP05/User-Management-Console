@@ -26,7 +26,6 @@ function EditRecord({ isOpen, closeDialog, editUserObj, updateUserCallback }) {
       email,
       role,
     });
-    setuserRecordLocal({});
     closeDialog();
   };
 
@@ -36,40 +35,39 @@ function EditRecord({ isOpen, closeDialog, editUserObj, updateUserCallback }) {
 
   return (
     <div>
-      <Button color="info">Edit Record</Button>
       <Modal isOpen={isOpen} centered>
         <ModalHeader>Edit Record</ModalHeader>
         <ModalBody>
-          <div class="mb-2">
-            <label for="exampleFormControlInput1" class="form-label">
+          <div className="mb-2">
+            <label htmlFor="exampleFormControlInput1" className="form-label">
               Name
             </label>
             <input
               type="text"
-              class="form-control"
+              className="form-control"
               placeholder="Narendra Modi"
               value={userRecordLocal.name}
               onChange={handleChange('name')}
             />
           </div>
-          <div class="mb-2">
-            <label for="exampleFormControlInput2" class="form-label">
+          <div className="mb-2">
+            <label htmlFor="exampleFormControlInput2" className="form-label">
               Email address
             </label>
             <input
               type="email"
-              class="form-control"
+              className="form-control"
               id="exampleFormControlInput2"
               placeholder="namo@pmo.com"
               value={userRecordLocal.email}
               onChange={handleChange('email')}
             />
           </div>
-          <label for="role-select-id" class="form-label">
+          <label htmlFor="role-select-id" className="form-label">
             Role
           </label>
           <select
-            class="form-select"
+            className="form-select"
             aria-label="Default select example"
             id="role-select-id"
             value={userRecordLocal.role}

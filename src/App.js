@@ -196,7 +196,7 @@ function App() {
                       className="btn btn-warning mx-1 icon-button"
                       onClick={() => editUserById(dataRow.id)}
                     >
-                      <img src={EditIcon} />
+                      <img src={EditIcon} alt='edit-icon'/>
                       Edit
                     </button>
                     <button
@@ -204,7 +204,7 @@ function App() {
                       className="btn btn-danger mx-1 icon-button"
                       onClick={() => deleteUserById(dataRow.id)}
                     >
-                      <img src={DeleteIcon} />
+                      <img src={DeleteIcon} alt='delete-icon'/>
                       Delete
                     </button>
                   </td>
@@ -230,7 +230,6 @@ function App() {
         editUserObj={editUserObj}
         updateUserCallback={updateUserCallback}
       />
-      <Spinner color="success" />
     </>
   );
 }

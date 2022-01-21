@@ -21,7 +21,6 @@ function ConfirmDelete({
 
   return (
     <div>
-      <Button color="danger">Confirm Delete</Button>
       <Modal isOpen={isOpen} centered>
         <ModalHeader>Are you sure ?</ModalHeader>
         <ModalBody>
