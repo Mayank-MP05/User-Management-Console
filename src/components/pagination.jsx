@@ -37,22 +37,20 @@ function Pagination({ activeRowController, maxRows = 5 }) {
             </button>
           </li>
           {rowExistsArr.map((existsFlag, currentIdx) => (
-            <>
-              <li className="page-item" key={currentIdx}>
-                {existsFlag ? (
-                  <button
-                    className={`page-link ${
-                      currentIdx === activeRow ? 'active-page' : 'eligible-page'
-                    }`}
-                    onClick={() => setactiveRow(currentIdx)}
-                  >
-                    {currentIdx + 1}
-                  </button>
-                ) : (
-                  ''
-                )}
-              </li>
-            </>
+            <li className="page-item" key={currentIdx}>
+              {existsFlag ? (
+                <button
+                  className={`page-link ${
+                    currentIdx === activeRow ? 'active-page' : 'eligible-page'
+                  }`}
+                  onClick={() => setactiveRow(currentIdx)}
+                >
+                  {currentIdx + 1}
+                </button>
+              ) : (
+                ''
+              )}
+            </li>
           ))}
           <li className="page-item">
             <button
