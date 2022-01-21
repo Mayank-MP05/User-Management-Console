@@ -11,7 +11,7 @@ import {
 function EditRecord({ isOpen }) {
   return (
     <div>
-      <Button color="danger">Edit Record</Button>
+      <Button color="info">Edit Record</Button>
       <Modal isOpen={isOpen} centered>
         <ModalHeader>Edit Record</ModalHeader>
         <ModalBody>
