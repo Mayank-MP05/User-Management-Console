@@ -246,7 +246,7 @@ function App() {
           noOfRowsSelected={noOfRowsSelected}
           deleteSelectedButtonHandler={deleteSelectedButtonHandler}
         />
-        <div class="table-responsive">
+        <div className="table-responsive">
           <table className="table">
             <thead>
               <tr>
