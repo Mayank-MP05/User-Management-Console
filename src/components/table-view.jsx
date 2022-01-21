@@ -24,7 +24,7 @@ const dataFromAPI = [
   },
 ];
 
-function TableView() {
+function TableView({ renderData }) {
   return (
     <table className="table">
       <thead>
@@ -39,7 +39,7 @@ function TableView() {
         </tr>
       </thead>
       <tbody>
-        {dataFromAPI.map((dataRow) => (
+        {renderData.map((dataRow) => (
           <tr key={dataRow.id}>
             <th scope="row">
               <input className="form-check-input" type="checkbox" value="" />
