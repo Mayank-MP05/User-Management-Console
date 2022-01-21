@@ -15,6 +15,11 @@ function ConfirmDelete({
   deleteUserObj,
 }) {
   const confirmDeleteProceed = () => {
+    if (deleteUserObj === 'BULK_DELETE') {
+      deleteUserCallback([], true);
+      closeDialog();
+      return;
+    }
     deleteUserCallback(deleteUserObj.id);
     closeDialog();
   };

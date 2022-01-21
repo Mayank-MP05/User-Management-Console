@@ -33,6 +33,9 @@ function App() {
   const [bulkSelectFlag, setbulkSelectFlag] = useState(false);
   const [noOfRowsSelected, setnoOfRowsSelected] = useState(0);
 
+  // Bulk Delete Ids list
+  const [bulkDeleteIdList, setbulkDeleteIdList] = useState([]);
+
   /**
    * Call this useEffect first time Page loads - Fetches Data from API
    */
@@ -134,7 +137,28 @@ function App() {
     setusersListRaw([...newUserList]);
   };
 
-  const deleteUserCallback = (userId) => {
+  /**
+   * Callback function to called when single or bulk delete operation is done
+   * @param {*} userId - String or Array
+   * @param {*} bulkDelete - Flag only true for deleting multiples users at once
+   * @returns
+   */
+  const deleteUserCallback = (userId, bulkDelete = false) => {
+    if (bulkDelete) {
+      setbulkSelectFlag(false);
+      if (userId.length !== 0) {
+        let newUserList = usersListRaw.filter(
+          (userRecord) => !userId.includes(userRecord.id)
+        );
+        setusersListRaw([...newUserList]);
+        return;
+      }
+      let newUserList = usersListRaw.filter(
+        (userRecord) => !userRecord.checked
+      );
+      setusersListRaw([...newUserList]);
+      return;
+    }
     let newUserList = usersListRaw.filter(
       (userRecord) => userRecord.id !== userId
     );
@@ -184,12 +208,38 @@ function App() {
     setusersListRaw([...newUserList]);
   };
 
+  /**
+   * Update the userRawData check flag based on Active Row
+   * @param {*} e - Event which hold boolean checker if checkbox is checked
+   */
   const bulkSelectHandler = (e) => {
-    console.log(e, activeRow);
     const checked = e.target.checked;
-    setbulkSelectFlag(checked);
+    setbulkSelectFlag(!bulkSelectFlag);
     const startIdx = activeRow * pagesPerRow;
     const endIdx = (activeRow + 1) * pagesPerRow;
+
+    const newUserList = usersListRaw.map((userRecord, idx) => {
+      if (idx >= startIdx && idx < endIdx) {
+        return { ...userRecord, checked };
+      }
+      return { ...userRecord, checked: false };
+    });
+    setusersListRaw([...newUserList]);
+  };
+
+  /**
+   * filter the entries based on checked flag
+   * @param {*} userIdArr - Array of UserIds to toggle
+   */
+  const bulkDeleteHandler = (userIdArr = []) => {
+    if (userIdArr.length === 0) {
+    } else {
+    }
+  };
+
+  const deleteSelectedButtonHandler = () => {
+    setdeleteUserObj('BULK_DELETE');
+    setdeleteUserModalFlag(true);
   };
   return (
     <>
@@ -201,6 +251,7 @@ function App() {
         <StatusBar
           usersListRaw={usersListRaw}
           noOfRowsSelected={noOfRowsSelected}
+          deleteSelectedButtonHandler={deleteSelectedButtonHandler}
         />
         <table className="table">
           <thead>
@@ -209,7 +260,7 @@ function App() {
                 <input
                   className="form-check-input"
                   type="checkbox"
-                  value=""
+                  checked={bulkSelectFlag}
                   onChange={bulkSelectHandler}
                 />
               </th>

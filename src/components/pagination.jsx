@@ -9,6 +9,10 @@ function Pagination({ activeRowController, maxRows = 5, resetBulkSelect }) {
     maxRows
   );
 
+  useEffect(() => {
+    resetBulkSelect(false);
+  }, [activeRow, setactiveRow]);
+
   return (
     <div className="m-2">
       <nav
