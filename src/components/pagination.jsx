@@ -12,7 +12,7 @@ function Pagination({ activeRowController, maxRows = 5 }) {
   return (
     <div className="m-2">
       <nav
-        aria-label="Page navigation example"
+        aria-label="Users Page navigation"
         className="d-flex justify-content-center align-items-center"
       >
         <ul className="pagination">
@@ -20,7 +20,7 @@ function Pagination({ activeRowController, maxRows = 5 }) {
             <button
               className="page-link"
               aria-label="First Page"
-              // onClick={() => setactiveRow(0)}
+              onClick={() => setactiveRow(0)}
             >
               <span aria-hidden="true">&lt;&lt;</span>
             </button>
@@ -57,7 +57,7 @@ function Pagination({ activeRowController, maxRows = 5 }) {
             <button
               className="page-link"
               aria-label="Last Page"
-              // onClick={() => setactiveRow(maxRows)}
+              onClick={() => setactiveRow(maxRows - 1)}
             >
               <span aria-hidden="true">&gt;&gt;</span>
             </button>
