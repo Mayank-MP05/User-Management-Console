@@ -30,7 +30,7 @@ function TableView() {
       <thead>
         <tr>
           <th scope="col">
-            <input class="form-check-input" type="checkbox" value="" />
+            <input className="form-check-input" type="checkbox" value="" />
           </th>
           <th scope="col">Name</th>
           <th scope="col">Email</th>
@@ -40,19 +40,22 @@ function TableView() {
       </thead>
       <tbody>
         {dataFromAPI.map((dataRow) => (
-          <tr>
+          <tr key={dataRow.id}>
             <th scope="row">
-              <input class="form-check-input" type="checkbox" value="" />
+              <input className="form-check-input" type="checkbox" value="" />
             </th>
             <td>{dataRow.name}</td>
             <td>{dataRow.email}</td>
             <td>{dataRow.role}</td>
-            <td class="d-flex">
-              <button type="button" class="btn btn-warning mx-1 icon-button">
+            <td className="d-flex">
+              <button
+                type="button"
+                className="btn btn-warning mx-1 icon-button"
+              >
                 <img src={EditIcon} />
                 Edit
               </button>
-              <button type="button" class="btn btn-danger mx-1 icon-button">
+              <button type="button" className="btn btn-danger mx-1 icon-button">
                 <img src={DeleteIcon} />
                 Delete
               </button>
