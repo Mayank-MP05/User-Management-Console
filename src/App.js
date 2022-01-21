@@ -1,3 +1,4 @@
+import { Spinner } from 'reactstrap';
 import ConfirmDelete from './components/confirm-delete';
 import EditRecord from './components/edit-record';
 import Navbar from './components/navbar';
@@ -16,6 +17,7 @@ function App() {
       <Pagination />
       <ConfirmDelete isOpen={false} />
       <EditRecord isOpen={false} />
+      <Spinner color="success" />
     </>
   );
 }
