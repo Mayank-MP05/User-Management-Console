@@ -8,6 +8,10 @@ import Pagination from './components/pagination';
 import StatusBar from './components/status-bar';
 import TableView from './components/table-view';
 
+// Icon Images Imports
+import EditIcon from './assets/user-edit-solid.svg';
+import DeleteIcon from './assets/user-delete-solid.svg';
+
 function App() {
   const [usersListRaw, setusersListRaw] = useState([]);
   const [usersListRender, setusersListRender] = useState([]);
@@ -49,7 +53,52 @@ function App() {
       />
       <div className="container mt-3">
         <StatusBar />
-        <TableView renderData={usersListRender} />
+        {/* <TableView renderData={usersListRender} /> */}
+        <table className="table">
+          <thead>
+            <tr>
+              <th scope="col">
+                <input className="form-check-input" type="checkbox" value="" />
+              </th>
+              <th scope="col">Name</th>
+              <th scope="col">Email</th>
+              <th scope="col">Role</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {usersListRender.map((dataRow) => (
+              <tr key={dataRow.id}>
+                <th scope="row">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    value=""
+                  />
+                </th>
+                <td>{dataRow.name}</td>
+                <td>{dataRow.email}</td>
+                <td>{dataRow.role}</td>
+                <td className="d-flex">
+                  <button
+                    type="button"
+                    className="btn btn-warning mx-1 icon-button"
+                  >
+                    <img src={EditIcon} />
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-danger mx-1 icon-button"
+                  >
+                    <img src={DeleteIcon} />
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
       <Pagination />
       <ConfirmDelete isOpen={false} />
