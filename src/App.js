@@ -25,6 +25,10 @@ function App() {
   const [editUserModalFlag, seteditUserModalFlag] = useState(false);
   const [editUserObj, seteditUserObj] = useState({});
 
+  // Delete Functionality
+  const [deleteUserModalFlag, setdeleteUserModalFlag] = useState(false);
+  const [deleteUserObj, setdeleteUserObj] = useState({});
+
   /**
    * Call this useEffect first time Page loads - Fetches Data from API
    */
@@ -92,12 +96,15 @@ function App() {
     return paginatedData;
   };
 
+  /**
+   * Callack to passs to child to udpate master data in parent
+   * @param {*} userId
+   * @param {*} param1 - Object { name, email, role }
+   */
   const updateUserCallback = (userId, { name, email, role }) => {
     let newUserList = [];
-    console.log('updated: ', { userId, name, email, role });
     usersListRaw.forEach((userRecord) => {
       if (userRecord.id === userId) {
-        console.log('match');
         newUserList.push({
           id: userId,
           name,
@@ -108,16 +115,39 @@ function App() {
         newUserList.push(userRecord);
       }
     });
-    console.log(newUserList);
     setusersListRaw([...newUserList]);
   };
 
+  const deleteUserCallback = (userId) => {
+    let newUserList = usersListRaw.filter(
+      (userRecord) => userRecord.id !== userId
+    );
+    setusersListRaw([...newUserList]);
+  };
+
+  /**
+   * Button Click handler for Editing user record
+   * @param {*} userId
+   */
   const editUserById = (userId) => {
     const searchedObj = usersListRaw.find(
       (userRecord) => userRecord.id === userId
     );
     seteditUserObj(searchedObj);
     seteditUserModalFlag(true);
+  };
+
+  /**
+   * Button Click handler for deleting single user record
+   * @param {*} userId
+   */
+  const deleteUserById = (userId) => {
+    const searchedObj = usersListRaw.find(
+      (userRecord) => userRecord.id === userId
+    );
+
+    setdeleteUserObj(searchedObj);
+    setdeleteUserModalFlag(true);
   };
 
   return (
@@ -127,7 +157,8 @@ function App() {
         setsearchQueryStr={setsearchQueryStr}
       />
       <div className="container mt-3">
-        <StatusBar />        <table className="table">
+        <StatusBar />{' '}
+        <table className="table">
           <thead>
             <tr>
               <th scope="col">
@@ -147,39 +178,38 @@ function App() {
                 </th>
               </tr>
             ) : (
-              filteredAndPaginated(usersListRaw, activeRow).map(
-                (dataRow) => (
-                  <tr key={dataRow.id}>
-                    <th scope="row">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        value=""
-                      />
-                    </th>
-                    <td>{dataRow.name}</td>
-                    <td>{dataRow.email}</td>
-                    <td>{dataRow.role}</td>
-                    <td className="d-flex">
-                      <button
-                        type="button"
-                        className="btn btn-warning mx-1 icon-button"
-                        onClick={() => editUserById(dataRow.id)}
-                      >
-                        <img src={EditIcon} />
-                        Edit
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-danger mx-1 icon-button"
-                      >
-                        <img src={DeleteIcon} />
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                )
-              )
+              filteredAndPaginated(usersListRaw, activeRow).map((dataRow) => (
+                <tr key={dataRow.id}>
+                  <th scope="row">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      value=""
+                    />
+                  </th>
+                  <td>{dataRow.name}</td>
+                  <td>{dataRow.email}</td>
+                  <td>{dataRow.role}</td>
+                  <td className="d-flex">
+                    <button
+                      type="button"
+                      className="btn btn-warning mx-1 icon-button"
+                      onClick={() => editUserById(dataRow.id)}
+                    >
+                      <img src={EditIcon} />
+                      Edit
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-danger mx-1 icon-button"
+                      onClick={() => deleteUserById(dataRow.id)}
+                    >
+                      <img src={DeleteIcon} />
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))
             )}
           </tbody>
         </table>
@@ -188,7 +218,12 @@ function App() {
         activeRowController={{ activeRow, setactiveRow }}
         maxRows={maxRows}
       />
-      <ConfirmDelete isOpen={false} />
+      <ConfirmDelete
+        isOpen={deleteUserModalFlag}
+        closeDialog={() => setdeleteUserModalFlag(false)}
+        deleteUserCallback={deleteUserCallback}
+        deleteUserObj={deleteUserObj}
+      />
       <EditRecord
         isOpen={editUserModalFlag}
         closeDialog={() => seteditUserModalFlag(false)}

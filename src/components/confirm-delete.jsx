@@ -8,7 +8,17 @@ import {
   ModalFooter,
 } from 'reactstrap';
 
-function ConfirmDelete({ isOpen }) {
+function ConfirmDelete({
+  isOpen,
+  closeDialog,
+  deleteUserCallback,
+  deleteUserObj,
+}) {
+  const confirmDeleteProceed = () => {
+    deleteUserCallback(deleteUserObj.id);
+    closeDialog();
+  };
+
   return (
     <div>
       <Button color="danger">Confirm Delete</Button>
@@ -16,15 +26,16 @@ function ConfirmDelete({ isOpen }) {
         <ModalHeader>Are you sure ?</ModalHeader>
         <ModalBody>
           Do you really want to delete this User records ? Once deleted It can
-          be{' '}
-          <span className="fw-bold">
-            very very very hard to recover
-          </span>
-          . It can be only recovered by refreshing the webpage. Thank me later.
+          be <span className="fw-bold">very very very hard to recover</span>. It
+          can be only recovered by refreshing the webpage. Thank me later.
         </ModalBody>
         <ModalFooter>
-          <Button color="light">Cancel</Button>
-          <Button color="danger">Confirm Delete</Button>
+          <Button color="light" onClick={closeDialog}>
+            Cancel
+          </Button>
+          <Button color="danger" onClick={confirmDeleteProceed}>
+            Confirm Delete
+          </Button>
         </ModalFooter>
       </Modal>
     </div>
