@@ -1,5 +1,12 @@
+import Navbar from './components/navbar';
+
 function App() {
-  return <div className="container">GeekTrust Admin UI Project👋👋👋</div>;
+  return (
+    <>
+      <Navbar />
+      GeekTrust Admin UI Project👋👋👋
+    </>
+  );
 }
 
 export default App;
