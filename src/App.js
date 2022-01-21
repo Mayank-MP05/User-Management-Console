@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react/cjs/react.development';
+import { useEffect, useState } from 'react';
 import { Spinner } from 'reactstrap';
 import ConfirmDelete from './components/confirm-delete';
 import EditRecord from './components/edit-record';
