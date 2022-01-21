@@ -12,7 +12,7 @@ import EditIcon from './assets/user-edit-solid.svg';
 import DeleteIcon from './assets/user-delete-solid.svg';
 
 // table view css
-import "./styles/table-view.style.css"
+import './styles/table-view.style.css';
 
 // Constants
 const PAGES_PER_ROW = 10;
@@ -246,34 +246,41 @@ function App() {
           noOfRowsSelected={noOfRowsSelected}
           deleteSelectedButtonHandler={deleteSelectedButtonHandler}
         />
-        <table className="table">
-          <thead>
-            <tr>
-              <th scope="col">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  checked={bulkSelectFlag}
-                  onChange={bulkSelectHandler}
-                />
-              </th>
-              <th scope="col">Name</th>
-              <th scope="col">Email</th>
-              <th scope="col">Role</th>
-              <th scope="col">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tableLoader ? (
+        <div class="table-responsive">
+          <table className="table">
+            <thead>
               <tr>
-                <th className="text-center m-4" colSpan="5">
-                  <Spinner color="success" />
+                <th scope="col">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    checked={bulkSelectFlag}
+                    onChange={bulkSelectHandler}
+                  />
                 </th>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Role</th>
+                <th scope="col">Actions</th>
               </tr>
-            ) : (
-              filteredAndPaginated(usersListRaw, activeRow, bulkSelectFlag).map(
-                (dataRow) => (
-                  <tr key={dataRow.id} className={dataRow.checked ? `selected-row` : ''}>
+            </thead>
+            <tbody>
+              {tableLoader ? (
+                <tr>
+                  <th className="text-center m-4" colSpan="5">
+                    <Spinner color="success" />
+                  </th>
+                </tr>
+              ) : (
+                filteredAndPaginated(
+                  usersListRaw,
+                  activeRow,
+                  bulkSelectFlag
+                ).map((dataRow) => (
+                  <tr
+                    key={dataRow.id}
+                    className={dataRow.checked ? `selected-row` : ''}
+                  >
                     <th scope="row">
                       <input
                         className="form-check-input"
@@ -305,11 +312,11 @@ function App() {
                       </button>
                     </td>
                   </tr>
-                )
-              )
-            )}
-          </tbody>
-        </table>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
       <Pagination
         activeRowController={{ activeRow, setactiveRow }}
