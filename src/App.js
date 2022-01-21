@@ -16,11 +16,14 @@ const pagesPerRow = 10;
 
 function App() {
   const [usersListRaw, setusersListRaw] = useState([]);
-  const [usersListRender, setusersListRender] = useState([]);
   const [searchQueryStr, setsearchQueryStr] = useState(``);
   const [tableLoader, settableLoader] = useState(false);
   const [activeRow, setactiveRow] = useState(0);
   const [maxRows, setmaxRows] = useState(0);
+
+  // Edit Functionality
+  const [editUserModalFlag, seteditUserModalFlag] = useState(false);
+  const [editUserObj, seteditUserObj] = useState({});
 
   /**
    * Call this useEffect first time Page loads - Fetches Data from API
@@ -33,7 +36,6 @@ function App() {
       )
       .then((res) => {
         setusersListRaw(res.data);
-        setusersListRender(res.data);
       })
       .catch((err) => console.log(err))
       .finally(() => {
@@ -74,6 +76,12 @@ function App() {
     return paginated;
   };
 
+  /**
+   * Simple Chaining Function takes raw data as input and return fully processed data
+   * @param {*} usersListRaw - Raw Userlist from API
+   * @param {*} activeRow - Pagination page index
+   * @returns Filtered and then Paginated array
+   */
   const filteredAndPaginated = (usersListRaw, activeRow) => {
     const filteredData = getFilteredResults(usersListRaw);
     const maxRowsGenerated = Math.ceil(filteredData.length / pagesPerRow);
@@ -84,6 +92,34 @@ function App() {
     return paginatedData;
   };
 
+  const updateUserCallback = (userId, { name, email, role }) => {
+    let newUserList = [];
+    console.log('updated: ', { userId, name, email, role });
+    usersListRaw.forEach((userRecord) => {
+      if (userRecord.id === userId) {
+        console.log('match');
+        newUserList.push({
+          id: userId,
+          name,
+          email,
+          role,
+        });
+      } else {
+        newUserList.push(userRecord);
+      }
+    });
+    console.log(newUserList);
+    setusersListRaw([...newUserList]);
+  };
+
+  const editUserById = (userId) => {
+    const searchedObj = usersListRaw.find(
+      (userRecord) => userRecord.id === userId
+    );
+    seteditUserObj(searchedObj);
+    seteditUserModalFlag(true);
+  };
+
   return (
     <>
       <Navbar
@@ -91,9 +127,7 @@ function App() {
         setsearchQueryStr={setsearchQueryStr}
       />
       <div className="container mt-3">
-        <StatusBar />
-        {/* <TableView renderData={usersListRender} /> */}
-        <table className="table">
+        <StatusBar />        <table className="table">
           <thead>
             <tr>
               <th scope="col">
@@ -113,7 +147,7 @@ function App() {
                 </th>
               </tr>
             ) : (
-              filteredAndPaginated(usersListRender, activeRow).map(
+              filteredAndPaginated(usersListRaw, activeRow).map(
                 (dataRow) => (
                   <tr key={dataRow.id}>
                     <th scope="row">
@@ -130,6 +164,7 @@ function App() {
                       <button
                         type="button"
                         className="btn btn-warning mx-1 icon-button"
+                        onClick={() => editUserById(dataRow.id)}
                       >
                         <img src={EditIcon} />
                         Edit
@@ -154,7 +189,12 @@ function App() {
         maxRows={maxRows}
       />
       <ConfirmDelete isOpen={false} />
-      <EditRecord isOpen={false} />
+      <EditRecord
+        isOpen={editUserModalFlag}
+        closeDialog={() => seteditUserModalFlag(false)}
+        editUserObj={editUserObj}
+        updateUserCallback={updateUserCallback}
+      />
       <Spinner color="success" />
     </>
   );
