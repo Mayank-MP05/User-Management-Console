@@ -29,6 +29,10 @@ function App() {
   const [deleteUserModalFlag, setdeleteUserModalFlag] = useState(false);
   const [deleteUserObj, setdeleteUserObj] = useState({});
 
+  // Bulk Select
+  const [bulkSelectFlag, setbulkSelectFlag] = useState(false);
+  const [noOfRowsSelected, setnoOfRowsSelected] = useState(0);
+
   /**
    * Call this useEffect first time Page loads - Fetches Data from API
    */
@@ -39,7 +43,7 @@ function App() {
         `https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json`
       )
       .then((res) => {
-        setusersListRaw(res.data);
+        setusersListRaw(res.data.map((obj) => ({ ...obj, checked: false })));
       })
       .catch((err) => console.log(err))
       .finally(() => {
@@ -69,7 +73,7 @@ function App() {
    * @param {*} activeRow - Row which to render to UI
    * @returns - Sliced array segment of length with Proper indexing
    */
-  const buildPagination = (userListFiltered, activeRow) => {
+  const buildPagination = (userListFiltered, activeRow, bulkSelectFlag) => {
     if (!userListFiltered) return userListFiltered;
 
     const startIdx = activeRow * pagesPerRow;
@@ -77,7 +81,14 @@ function App() {
 
     // startIdx to endIdx ranges like 0-10 , 10-20 (endIdx excluded)
     const paginated = userListFiltered.slice(startIdx, endIdx);
-    return paginated;
+    const checkboxIncl = paginated.map((user) => ({
+      ...user,
+      checked: bulkSelectFlag || user.checked,
+    }));
+
+    let noOfRows = paginated.filter((user) => user.checked).length;
+    if (noOfRowsSelected !== noOfRows) setnoOfRowsSelected(noOfRows);
+    return checkboxIncl;
   };
 
   /**
@@ -86,12 +97,16 @@ function App() {
    * @param {*} activeRow - Pagination page index
    * @returns Filtered and then Paginated array
    */
-  const filteredAndPaginated = (usersListRaw, activeRow) => {
+  const filteredAndPaginated = (usersListRaw, activeRow, bulkSelectFlag) => {
     const filteredData = getFilteredResults(usersListRaw);
     const maxRowsGenerated = Math.ceil(filteredData.length / pagesPerRow);
     if (maxRows !== maxRowsGenerated) setmaxRows(maxRowsGenerated);
 
-    const paginatedData = buildPagination(filteredData, activeRow);
+    const paginatedData = buildPagination(
+      filteredData,
+      activeRow,
+      bulkSelectFlag
+    );
 
     return paginatedData;
   };
@@ -110,6 +125,7 @@ function App() {
           name,
           email,
           role,
+          checked: false,
         });
       } else {
         newUserList.push(userRecord);
@@ -150,6 +166,31 @@ function App() {
     setdeleteUserModalFlag(true);
   };
 
+  const handleTickChange = (userId) => () => {
+    let newUserList = [];
+    usersListRaw.forEach((userRecord) => {
+      if (userRecord.id === userId) {
+        newUserList.push({
+          id: userId,
+          name: userRecord.name,
+          email: userRecord.email,
+          role: userRecord.role,
+          checked: !userRecord.checked,
+        });
+      } else {
+        newUserList.push(userRecord);
+      }
+    });
+    setusersListRaw([...newUserList]);
+  };
+
+  const bulkSelectHandler = (e) => {
+    console.log(e, activeRow);
+    const checked = e.target.checked;
+    setbulkSelectFlag(checked);
+    const startIdx = activeRow * pagesPerRow;
+    const endIdx = (activeRow + 1) * pagesPerRow;
+  };
   return (
     <>
       <Navbar
@@ -157,12 +198,20 @@ function App() {
         setsearchQueryStr={setsearchQueryStr}
       />
       <div className="container mt-3">
-        <StatusBar />{' '}
+        <StatusBar
+          usersListRaw={usersListRaw}
+          noOfRowsSelected={noOfRowsSelected}
+        />
         <table className="table">
           <thead>
             <tr>
               <th scope="col">
-                <input className="form-check-input" type="checkbox" value="" />
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  value=""
+                  onChange={bulkSelectHandler}
+                />
               </th>
               <th scope="col">Name</th>
               <th scope="col">Email</th>
@@ -178,38 +227,42 @@ function App() {
                 </th>
               </tr>
             ) : (
-              filteredAndPaginated(usersListRaw, activeRow).map((dataRow) => (
-                <tr key={dataRow.id}>
-                  <th scope="row">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      value=""
-                    />
-                  </th>
-                  <td>{dataRow.name}</td>
-                  <td>{dataRow.email}</td>
-                  <td>{dataRow.role}</td>
-                  <td className="d-flex">
-                    <button
-                      type="button"
-                      className="btn btn-warning mx-1 icon-button"
-                      onClick={() => editUserById(dataRow.id)}
-                    >
-                      <img src={EditIcon} alt='edit-icon'/>
-                      Edit
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-danger mx-1 icon-button"
-                      onClick={() => deleteUserById(dataRow.id)}
-                    >
-                      <img src={DeleteIcon} alt='delete-icon'/>
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))
+              filteredAndPaginated(usersListRaw, activeRow, bulkSelectFlag).map(
+                (dataRow) => (
+                  <tr key={dataRow.id}>
+                    <th scope="row">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        value=""
+                        checked={dataRow.checked}
+                        onChange={handleTickChange(dataRow.id)}
+                      />
+                    </th>
+                    <td>{dataRow.name}</td>
+                    <td>{dataRow.email}</td>
+                    <td>{dataRow.role}</td>
+                    <td className="d-flex">
+                      <button
+                        type="button"
+                        className="btn btn-warning mx-1 icon-button"
+                        onClick={() => editUserById(dataRow.id)}
+                      >
+                        <img src={EditIcon} alt="edit-icon" />
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-danger mx-1 icon-button"
+                        onClick={() => deleteUserById(dataRow.id)}
+                      >
+                        <img src={DeleteIcon} alt="delete-icon" />
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                )
+              )
             )}
           </tbody>
         </table>
@@ -217,6 +270,7 @@ function App() {
       <Pagination
         activeRowController={{ activeRow, setactiveRow }}
         maxRows={maxRows}
+        resetBulkSelect={() => setbulkSelectFlag(false)}
       />
       <ConfirmDelete
         isOpen={deleteUserModalFlag}

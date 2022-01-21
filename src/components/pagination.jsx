@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import '../styles/pagination.style.css';
 
-function Pagination({ activeRowController, maxRows = 5 }) {
+function Pagination({ activeRowController, maxRows = 5, resetBulkSelect }) {
   const { activeRow, setactiveRow } = activeRowController;
   const rowExistsArr = [false, false, false, false, false].fill(
     true,
