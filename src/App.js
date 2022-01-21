@@ -6,13 +6,17 @@ import EditRecord from './components/edit-record';
 import Navbar from './components/navbar';
 import Pagination from './components/pagination';
 import StatusBar from './components/status-bar';
-import TableView from './components/table-view';
 
 // Icon Images Imports
 import EditIcon from './assets/user-edit-solid.svg';
 import DeleteIcon from './assets/user-delete-solid.svg';
 
-const pagesPerRow = 10;
+// table view css
+import "./styles/table-view.style.css"
+
+// Constants
+const PAGES_PER_ROW = 10;
+const API_URL = `https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json`;
 
 function App() {
   const [usersListRaw, setusersListRaw] = useState([]);
@@ -42,9 +46,7 @@ function App() {
   useEffect(() => {
     settableLoader(true);
     axios
-      .get(
-        `https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json`
-      )
+      .get(API_URL)
       .then((res) => {
         setusersListRaw(res.data.map((obj) => ({ ...obj, checked: false })));
       })
@@ -71,7 +73,7 @@ function App() {
   };
 
   /**
-   * Return the sliced array segment of length `pagesPerRow`
+   * Return the sliced array segment of length `PAGES_PER_ROW`
    * @param {*} userListFiltered - Input the filtered out array
    * @param {*} activeRow - Row which to render to UI
    * @returns - Sliced array segment of length with Proper indexing
@@ -79,8 +81,8 @@ function App() {
   const buildPagination = (userListFiltered, activeRow, bulkSelectFlag) => {
     if (!userListFiltered) return userListFiltered;
 
-    const startIdx = activeRow * pagesPerRow;
-    const endIdx = (activeRow + 1) * pagesPerRow;
+    const startIdx = activeRow * PAGES_PER_ROW;
+    const endIdx = (activeRow + 1) * PAGES_PER_ROW;
 
     // startIdx to endIdx ranges like 0-10 , 10-20 (endIdx excluded)
     const paginated = userListFiltered.slice(startIdx, endIdx);
@@ -102,7 +104,7 @@ function App() {
    */
   const filteredAndPaginated = (usersListRaw, activeRow, bulkSelectFlag) => {
     const filteredData = getFilteredResults(usersListRaw);
-    const maxRowsGenerated = Math.ceil(filteredData.length / pagesPerRow);
+    const maxRowsGenerated = Math.ceil(filteredData.length / PAGES_PER_ROW);
     if (maxRows !== maxRowsGenerated) setmaxRows(maxRowsGenerated);
 
     const paginatedData = buildPagination(
@@ -215,8 +217,8 @@ function App() {
   const bulkSelectHandler = (e) => {
     const checked = e.target.checked;
     setbulkSelectFlag(!bulkSelectFlag);
-    const startIdx = activeRow * pagesPerRow;
-    const endIdx = (activeRow + 1) * pagesPerRow;
+    const startIdx = activeRow * PAGES_PER_ROW;
+    const endIdx = (activeRow + 1) * PAGES_PER_ROW;
 
     const newUserList = usersListRaw.map((userRecord, idx) => {
       if (idx >= startIdx && idx < endIdx) {
@@ -227,20 +229,11 @@ function App() {
     setusersListRaw([...newUserList]);
   };
 
-  /**
-   * filter the entries based on checked flag
-   * @param {*} userIdArr - Array of UserIds to toggle
-   */
-  const bulkDeleteHandler = (userIdArr = []) => {
-    if (userIdArr.length === 0) {
-    } else {
-    }
-  };
-
   const deleteSelectedButtonHandler = () => {
     setdeleteUserObj('BULK_DELETE');
     setdeleteUserModalFlag(true);
   };
+
   return (
     <>
       <Navbar
@@ -280,7 +273,7 @@ function App() {
             ) : (
               filteredAndPaginated(usersListRaw, activeRow, bulkSelectFlag).map(
                 (dataRow) => (
-                  <tr key={dataRow.id}>
+                  <tr key={dataRow.id} className={dataRow.checked ? `selected-row` : ''}>
                     <th scope="row">
                       <input
                         className="form-check-input"

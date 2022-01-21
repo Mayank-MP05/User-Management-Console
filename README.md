@@ -18,8 +18,11 @@
 
 ---
 
-## How to setup local developement
+## How to setup locally
 
-1. Clone the Repo `git clone < repo_url >.git`
-2. install all the dependencies `npm install`
-3. start the local server `npm start`
+1. Clone the Repo or Download the Zip
+2. install all the dependencies `npm install` or `yarn`
+3. start the local server `npm start` and head onto [http://localhost:3000/](http://localhost:3000/)
+4. Boom!! &lt;Happy Coding /&gt;
+
+----

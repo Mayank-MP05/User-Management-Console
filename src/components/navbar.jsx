@@ -4,7 +4,7 @@ function Navbar({ searchQueryStr, setsearchQueryStr }) {
   return (
     <nav className="navbar navbar-light bg-light">
       <div className="container-fluid">
-        <a className="navbar-brand">GeekTrust Users</a>
+        <a className="navbar-brand">Users Admin UI</a>
         <div className="d-flex">
           <input
             className="form-control me-2"
