@@ -16,11 +16,13 @@ function App() {
   const [usersListRaw, setusersListRaw] = useState([]);
   const [usersListRender, setusersListRender] = useState([]);
   const [searchQueryStr, setsearchQueryStr] = useState(``);
+  const [tableLoader, settableLoader] = useState(false);
 
   /**
    * Call this useEffect first time Page loads - Fetches Data from API
    */
   useEffect(() => {
+    settableLoader(true);
     axios
       .get(
         `https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json`
@@ -29,21 +31,24 @@ function App() {
         setusersListRaw(res.data);
         setusersListRender(res.data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() => {
+        settableLoader(false);
+      });
   }, []);
 
   /**
-   * Filter outs the data based on the Search Query Provided
+   * Filter out the data based on the Search Query Provided
    */
-  useEffect(() => {
+  const getFilteredResults = (usersListRaw) => {
     const searchQueryTrimmed = searchQueryStr.trim();
     const filteredData = usersListRaw.filter((record) => {
       return `${record.id}|||${record.name}|||${record.role}|||${record.email}`.includes(
         searchQueryTrimmed
       );
     });
-    setusersListRender(filteredData);
-  }, [searchQueryStr, setsearchQueryStr]);
+    return filteredData;
+  };
 
   return (
     <>
@@ -67,36 +72,44 @@ function App() {
             </tr>
           </thead>
           <tbody>
-            {usersListRender.map((dataRow) => (
-              <tr key={dataRow.id}>
-                <th scope="row">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    value=""
-                  />
+            {tableLoader ? (
+              <tr>
+                <th className="text-center m-4" colspan="5">
+                  <Spinner color="success" />
                 </th>
-                <td>{dataRow.name}</td>
-                <td>{dataRow.email}</td>
-                <td>{dataRow.role}</td>
-                <td className="d-flex">
-                  <button
-                    type="button"
-                    className="btn btn-warning mx-1 icon-button"
-                  >
-                    <img src={EditIcon} />
-                    Edit
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-danger mx-1 icon-button"
-                  >
-                    <img src={DeleteIcon} />
-                    Delete
-                  </button>
-                </td>
               </tr>
-            ))}
+            ) : (
+              getFilteredResults(usersListRender).map((dataRow) => (
+                <tr key={dataRow.id}>
+                  <th scope="row">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      value=""
+                    />
+                  </th>
+                  <td>{dataRow.name}</td>
+                  <td>{dataRow.email}</td>
+                  <td>{dataRow.role}</td>
+                  <td className="d-flex">
+                    <button
+                      type="button"
+                      className="btn btn-warning mx-1 icon-button"
+                    >
+                      <img src={EditIcon} />
+                      Edit
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-danger mx-1 icon-button"
+                    >
+                      <img src={DeleteIcon} />
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
